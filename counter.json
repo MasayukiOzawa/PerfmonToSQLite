@@ -1,0 +1,16 @@
+[
+    {
+        "CategoryName":  "Processor",
+        "CounterName":  "% Processor Time",
+        "InstanceName":  "_Total"
+    },
+    {
+        "CategoryName":  "Memory",
+        "CounterName":  "Available MBytes"
+    },
+    {
+        "CategoryName":  "LogicalDisk",
+        "CounterName":  "Free Megabytes",
+        "InstanceName":  "*"
+    }
+]
