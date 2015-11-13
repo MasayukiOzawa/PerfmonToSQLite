@@ -12,5 +12,17 @@
         "CategoryName":  "LogicalDisk",
         "CounterName":  "Free Megabytes",
         "InstanceName":  "*"
+    },
+    {
+        "CategoryName":  "Paging File",
+        "CounterName":  [
+                         "% Usage", 
+                         "% Usage Peak"
+                        ],
+        "InstanceName":  "*"
+    },
+    {
+        "CategoryName":  "Network Adapter"
     }
+
 ]

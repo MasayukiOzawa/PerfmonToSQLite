@@ -1,4 +1,29 @@
-﻿[cmdletbinding()]
+﻿<# 
+.SYNOPSIS 
+パフォーマンスモニターの情報を取得して SQLite のデータベースに書き込む
+
+.DESCRIPTION
+JSON に定義されたパフォーマンスモニターの定義を元に、取得した情報を SQLite のデータベースに出力
+SQL Server 向けに作成したサンプルのJSONを使用した場合、1 時間のデータ取得で 15MB 程度のファイルが作成される
+
+.NOTES
+Author: Masayuki OZAWA
+
+.EXAMPLE
+PerfmonToSQLite.ps1 -EndTime (Get-Date).AddHours(2)
+
+
+.EXAMPLE
+PerfmonToSQLite.ps1 -StartTime "2016/1/1 00:00" -EndTime "2016/1/7 00:00"
+
+.LINK
+https://github.com/MasayukiOzawa/PerfmonToSQLite
+https://www.sqlite.org/
+https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki
+
+#>
+
+[cmdletbinding()]
 param(
 [parameter(Position=0)]
 [string]$ComputerName = $env:COMPUTERNAME,
@@ -9,14 +34,14 @@ param(
 [parameter(Position=3)]
 [datetime]$EndTime = ($StartTime).AddMinutes(5),
 [parameter(Position=4)]
-[string]$SQLitePath = "C:\sqlite",
+[string]$SQLitePath = (Split-Path $MyInvocation.MyCommand.Path -Parent),
 [parameter(Position=5)]
-$Counter = "c:\sqlite\counter.json"
+$Counter = (Join-Path (Split-Path $MyInvocation.MyCommand.Path -Parent) "json\counter.json")
 )
 
 Write-Output ("[{0}]:Performance Collection Start" -f (Get-Date))
 Write-Output ("*" * 40)
-Write-Output ("ComputerName:[{0}]`nInterval:[{1}]`nStartTime:[{2}]`nEndTime:[{3}]" -f $ComputerName, $Interval, $StartTime, $EndTime )
+Write-Output ("SQLitePath:[{0}]`nJson:[{1}]`nComputerName:[{2}]`nInterval:[{3}]`nStartTime:[{4}]`nEndTime:[{5}]" -f $SQLitePath, $Counter, $ComputerName, $Interval, $StartTime, $EndTime )
 Write-Output ("*" * 40)
 
 $summarytime = (Get-Date).ToString("yyyy/MM/dd HH:mm")
@@ -27,27 +52,34 @@ $json = Get-Content $Counter -Encoding UTF8 -Raw | ConvertFrom-Json
 
 foreach($Counter in $json){
     if([System.Diagnostics.PerformanceCounterCategory]::Exists($Counter.CategoryName, $ComputerName)){
-        if([System.Diagnostics.PerformanceCounterCategory]::CounterExists($Counter.CounterName, $Counter.CategoryName, $ComputerName)){
-            if($Counter.InstanceName -eq $null){
-                [void]$p.Add((New-Object System.Diagnostics.PerformanceCounter($Counter.CategoryName, $Counter.CounterName, $null, $ComputerName)))
-            }elseif($Counter.InstanceName -eq "*"){
-                (new-object System.Diagnostics.PerformanceCounterCategory($Counter.CategoryName,$ComputerName)).GetInstanceNames() `
-                | %{[void]$p.Add((New-Object System.Diagnostics.PerformanceCounter($Counter.CategoryName, $Counter.CounterName, $_, $ComputerName)))}
-            }else{
-                if([System.Diagnostics.PerformanceCounterCategory]::InstanceExists($Counter.InstanceName,$Counter.CategoryName, $ComputerName)){
-                    [void]$p.Add((New-Object System.Diagnostics.PerformanceCounter($Counter.CategoryName, $Counter.CounterName, $Counter.InstanceName, $ComputerName)))
+        if ($counter.CounterName -ne $null){
+            foreach($CounterName in $Counter.CounterName){
+                if([System.Diagnostics.PerformanceCounterCategory]::CounterExists($CounterName, $Counter.CategoryName, $ComputerName)){
+                    if($Counter.InstanceName -eq $null){
+                        [void]$p.Add((New-Object System.Diagnostics.PerformanceCounter($Counter.CategoryName, $CounterName, $null, $ComputerName)))
+                    }elseif($Counter.InstanceName -eq "*"){
+                        (New-Object System.Diagnostics.PerformanceCounterCategory($Counter.CategoryName,$ComputerName)).GetInstanceNames() `
+                        | %{[void]$p.Add((New-Object System.Diagnostics.PerformanceCounter($Counter.CategoryName, $CounterName, $_, $ComputerName)))}
+                    }else{
+                        if([System.Diagnostics.PerformanceCounterCategory]::InstanceExists($Counter.InstanceName,$Counter.CategoryName, $ComputerName)){
+                            [void]$p.Add((New-Object System.Diagnostics.PerformanceCounter($Counter.CategoryName, $CounterName, $Counter.InstanceName, $ComputerName)))
+                        }else{
+                            Write-Output ("CategoryName[{0}]`tCounterName[{1}]`tInstanceName[{2}] is Nothing" -f $Counter.CategoryName, $CounterName, $Counter.InstanceName)
+                        }
+                    }
                 }else{
-                    Write-Output ("InstanceName[{0}] is Nothing" -f $Counter.InstanceName)
+                    Write-Output ("CategoryName[{0}]`tCounterName[{1}] is Nothing" -f $Counter.CategoryName,$CounterName)
                 }
             }
         }else{
-            Write-Output ("CounterName[{0}] is Nothing" -f $Counter.CounterName)
-        }
+            (New-Object System.Diagnostics.PerformanceCounterCategory($Counter.CategoryName,$ComputerName)).GetInstanceNames() `
+            | %{(New-Object System.Diagnostics.PerformanceCounterCategory($Counter.CategoryName,$ComputerName)).GetCounters("$_")} `
+            | %{[void]$p.Add((New-Object System.Diagnostics.PerformanceCounter($_.CategoryName, $_.CounterName, $_.InstanceName, $ComputerName)))}
+        } 
     }else{
         Write-Output ("CategoryName[{0}] is Nothing" -f $Counter.CategoryName)
     }
 }
-
 
 [void]$p.NextValue()
 
@@ -56,7 +88,7 @@ $result = New-Object -TypeName System.Collections.ArrayList
 Add-Type -Path "$($SQLitePath)\System.Data.SQLite.dll"
 
 $constring = New-Object System.Data.SQLite.SQLiteConnectionStringBuilder
-$constring.psbase.DataSource = "$($SQLitePath)\sqlite.db"
+$constring.psbase.DataSource = ("$($SQLitePath)\sqlite-{0}.db" -f $ComputerName)
 
 $con = New-Object System.Data.SQLite.SQLiteConnection
 $con.ConnectionString = $constring

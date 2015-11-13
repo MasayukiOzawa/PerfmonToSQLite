@@ -1,0 +1,159 @@
+[
+    {
+        "CategoryName":  "Memory",
+        "CounterName":  [
+                        "Available MBytes",
+                        "Page Faults/sec",
+                        "Page Reads/sec",
+                        "Page Writes/sec",
+                        "Pages Input/sec",
+                        "Pages Output/sec",
+                        "Pages/sec",
+                        "Free System Page Table Entries",
+                        "Pool Nonpaged Bytes",
+                        "Pool Paged Bytes",
+                        "System Cache Resident Bytes"
+                        ]
+    },
+    {
+        "CategoryName":  "Paging File",
+        "CounterName":  [
+                        "% Usage", 
+                        "% Usage Peak"
+                        ],
+        "InstanceName":  "*"
+    },
+    {
+        "CategoryName":  "Network Interface",
+        "CounterName":  [
+                        "Bytes Received/sec",
+                        "Bytes Sent/sec",
+                        "Bytes Total/sec",
+                        "Output Queue Length"
+                        ],
+        "InstanceName":  "*"
+    },
+    {
+        "CategoryName":  "LogicalDisk",
+        "CounterName":  [
+                        "Free Megabytes",
+                        "% Idle Time",
+                        "Current Disk Queue Length",
+                        "Disk Bytes/sec",
+                        "Disk Read Bytes/sec",
+                        "Disk Reads/sec",
+                        "Disk Transfers/sec",
+                        "Disk Write Bytes/sec",
+                        "Disk Writes/sec",
+                        "Avg. Disk Queue Length",
+                        "Avg. Disk Read Queue Length",
+                        "Avg. Disk sec/Read",
+                        "Avg. Disk sec/Write",
+                        "Avg. Disk sec/Transfer",
+                        "Avg. Disk Write Queue Length",
+                        "Avg. Disk Bytes/Read",
+                        "Avg. Disk Bytes/Transfer",
+                        "Avg. Disk Bytes/Write"
+                        ],
+        "InstanceName":  "*"
+    },
+    {
+        "CategoryName":  "PhysicalDisk",
+        "CounterName":  [
+                        "% Idle Time",
+                        "Current Disk Queue Length",
+                        "Disk Bytes/sec",
+                        "Disk Read Bytes/sec",
+                        "Disk Reads/sec",
+                        "Disk Transfers/sec",
+                        "Disk Write Bytes/sec",
+                        "Disk Writes/sec",
+                        "Avg. Disk Queue Length",
+                        "Avg. Disk Read Queue Length",
+                        "Avg. Disk sec/Read",
+                        "Avg. Disk sec/Write",
+                        "Avg. Disk sec/Transfer",
+                        "Avg. Disk Write Queue Length",
+                        "Avg. Disk Bytes/Read",
+                        "Avg. Disk Bytes/Transfer",
+                        "Avg. Disk Bytes/Write"
+                        ],
+        "InstanceName":  "*"
+    },
+    {
+        "CategoryName":  "Process",
+        "CounterName":  [
+                        "% Privileged Time",
+                        "% Processor Time",
+                        "% User Time",
+                        "Page Faults/sec",
+                        "Thread Count",
+                        "Working Set",
+                        "Private Bytes",
+                        "Virtual Bytes"
+                        ],
+        "InstanceName":  "sqlservr"
+    },
+    {
+        "CategoryName":  "Processor",
+        "CounterName":  [
+                        "% Privileged Time",
+                        "% Processor Time",
+                        "% User Time",
+                        "% Interrupt Time"
+                        ],
+        "InstanceName":  "*"
+    },
+    {
+        "CategoryName":  "System",
+        "CounterName":  [
+                        "Processor Queue Length",
+                        "Context Switches/sec"
+                        ]
+    },
+    {
+        "CategoryName":  "SQLServer:Access Methods"
+    },
+    {
+        "CategoryName":  "SQLServer:Batch Resp Statistics"
+    },
+    {
+        "CategoryName":  "SQLServer:Buffer Manager"
+    },
+    {
+        "CategoryName":  "SQLServer:Databases"
+    },
+    {
+        "CategoryName":  "SQLServer:Exec Statistics"
+    },
+    {
+        "CategoryName":  "SQLServer:General Statistics"
+    },
+    {
+        "CategoryName":  "SQLServer:Latches"
+    },
+    {
+        "CategoryName":  "SQLServer:Locks"
+    },
+    {
+        "CategoryName":  "SQLServer:Memory Manager"
+    },
+    {
+        "CategoryName":  "SQLServer:Plan Cache"
+    },
+    {
+        "CategoryName":  "SQLServer:SQL Statistics"
+    },
+    {
+        "CategoryName":  "SQLServer:Transactions"
+    },
+    {
+        "CategoryName":  "SQLServer:Wait Statistics"
+    },
+    {
+        "CategoryName":  "SQLServer:Resource Pool Stats"
+    },
+    {
+        "CategoryName":  "SQLServer:Workload Group Stats"
+    }
+]
